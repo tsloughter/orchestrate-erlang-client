@@ -1,0 +1,17 @@
+## build system files
+*.beam
+.eunit
+.deps_plt
+deps
+ebin
+/log
+/_TMP
+
+## generic files
+*~
+*.lock
+*.DS_Store
+*.swp
+*.out
+Icon?
+Thumbs.db

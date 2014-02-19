@@ -1,0 +1,13 @@
+{application, orchestrate_client,
+ [
+  {description, "An asynchronous client for the Orchestrate.io service."},
+  {vsn, git},
+  {registered, [orchestrate_client_sup]},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  gun
+                 ]},
+  {mod, {orchestrate_client_app, []}},
+  {env, []}
+ ]}.
