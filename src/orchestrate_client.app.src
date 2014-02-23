@@ -6,7 +6,8 @@
   {applications, [
                   kernel,
                   stdlib,
-                  gun
+                  ssl,
+                  inets
                  ]},
   {mod, {orchestrate_client_app, []}},
   {env, []}
