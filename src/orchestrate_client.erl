@@ -152,10 +152,10 @@ relation_purge(Collection, Key, Kind, ToCollection, ToKey) ->
 %% Internal API
 
 request(Method, UriFragment, Headers, Body) ->
-    Url = ["https://api.orchestrate.io:443/v0/", UriFragment],
+    Url = lists:flatten("https://api.orchestrate.io:443/v0/", UriFragment),
     % TODO move API key to a "client" record
     % TODO expose some of the HttpOptions
-    AuthHeaderValue = "Basic " ++ base64:encode_to_string("4390ea15-947e-4948-9984-9ba2c1d508a5:"),
+    AuthHeaderValue = lists:flatten("Basic ", base64:encode_to_string("4390ea15-947e-4948-9984-9ba2c1d508a5:")),
     Headers2 = [
         {"accept", "application/json"},
         {"authorization", AuthHeaderValue},
