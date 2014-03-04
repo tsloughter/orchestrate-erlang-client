@@ -197,8 +197,11 @@ request(Method, UriFragment, Headers, Body) ->
     ]),
     Response = httpc:request(Method, Request, HttpOptions, Options),
     case Response of
-        {ok, {{_, Status, _}, Headers3, Body2}} when Status >= 200, Status < 400 ->
-            {Headers3, jiffy:decode(Body2)};
-        _ ->
+        {ok, {{_, Status, _}, Headers3, _Body2}} when Status == 201; Status == 204 ->
+            {Status, Headers3, no_body};
+        {ok, {{_, Status, _}, Headers3, Body2}} ->
+            % also decode Orchestrate error JSON responses
+            {Status, Headers3, jiffy:decode(Body2)};
+        {error, _} ->
             Response
     end.
