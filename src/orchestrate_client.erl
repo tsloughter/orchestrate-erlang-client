@@ -39,58 +39,114 @@ set_apikey(ApiKey) when is_binary(ApiKey) ->
     Auth = <<"Basic ", EncodedToken/binary>>,
     application:set_env(orchestrate_client, http_auth, binary_to_list(Auth)).
 
+delete(Collection) when is_binary(Collection) ->
+    delete(binary_to_list(Collection));
 delete(Collection) ->
-    request(delete, Collection, [], []).
+    request(delete, Collection).
 
+search(Collection, LuceneQuery) when is_binary(Collection) ->
+    search(binary_to_list(Collection), LuceneQuery);
+search(Collection, LuceneQuery) when is_binary(LuceneQuery) ->
+    search(Collection, binary_to_list(LuceneQuery));
 search(Collection, LuceneQuery) ->
     UriFragment = search_uri_encode([Collection], LuceneQuery),
-    request(get, UriFragment, [], []).
+    request(get, UriFragment).
 
+search(Collection, LuceneQuery, Offset) when is_binary(Collection) ->
+    search(binary_to_list(Collection), LuceneQuery, Offset);
+search(Collection, LuceneQuery, Offset) when is_binary(LuceneQuery) ->
+    search(Collection, binary_to_list(LuceneQuery), Offset);
 search(Collection, LuceneQuery, Offset) ->
     UriFragment = [search_uri_encode([Collection], LuceneQuery), "&offset=", Offset],
-    request(get, UriFragment, [], []).
+    request(get, UriFragment).
 
+search(Collection, LuceneQuery, Offset, Limit) when is_binary(Collection) ->
+    search(binary_to_list(Collection), LuceneQuery, Offset, Limit);
+search(Collection, LuceneQuery, Offset, Limit) when is_binary(LuceneQuery) ->
+    search(Collection, binary_to_list(LuceneQuery), Offset, Limit);
 search(Collection, LuceneQuery, Offset, Limit) ->
     UriFragment = [search_uri_encode([Collection], LuceneQuery), "&offset=", Offset, "&limit=", Limit],
-    request(get, UriFragment, [], []).
+    request(get, UriFragment).
 
+kv_get(Collection, Key) when is_binary(Collection) ->
+    kv_get(binary_to_list(Collection), Key);
+kv_get(Collection, Key) when is_binary(Key) ->
+    kv_get(Collection, binary_to_list(Key));
 kv_get(Collection, Key) ->
     UriFragment = uri_path_encode([Collection, Key]),
-    request(get, UriFragment, [], []).
+    request(get, UriFragment).
 
+kv_get(Collection, Key, Ref) when is_binary(Collection) ->
+    kv_get(binary_to_list(Collection), Key, Ref);
+kv_get(Collection, Key, Ref) when is_binary(Key) ->
+    kv_get(Collection, binary_to_list(Key), Ref);
+kv_get(Collection, Key, Ref) when is_binary(Ref) ->
+    kv_get(Collection, Key, binary_to_list(Ref));
 kv_get(Collection, Key, Ref) ->
     UriFragment = [uri_path_encode([Collection, Key]), "/refs/", Ref],
-    request(get, UriFragment, [], []).
+    request(get, UriFragment).
 
+kv_list(Collection) when is_binary(Collection) ->
+    kv_list(binary_to_list(Collection));
 kv_list(Collection) ->
     UriFragment = uri_path_encode([Collection]),
-    request(get, UriFragment, [], []).
+    request(get, UriFragment).
 
+kv_list(Collection, Limit) when is_binary(Collection) ->
+    kv_list(binary_to_list(Collection), Limit);
 kv_list(Collection, Limit) when is_integer(Limit) ->
     UriFragment = [uri_path_encode([Collection]), "?limit=", Limit],
-    request(get, UriFragment, [], []);
+    request(get, UriFragment);
+kv_list(Collection, StartKey) when is_binary(StartKey) ->
+    kv_list(Collection, binary_to_list(StartKey));
 kv_list(Collection, StartKey) ->
     UriFragment = kv_list_uri_encode([Collection], "startKey", StartKey),
-    request(get, UriFragment, [], []).
+    request(get, UriFragment).
 
+kv_list(Collection, StartKey, true) when is_binary(Collection) ->
+    kv_list(binary_to_list(Collection), StartKey, true);
+kv_list(Collection, StartKey, true) when is_binary(StartKey) ->
+    kv_list(Collection, binary_to_list(StartKey), true);
 kv_list(Collection, StartKey, true) ->
     UriFragment = kv_list_uri_encode([Collection], "afterKey", StartKey),
-    request(get, UriFragment, [], []);
+    request(get, UriFragment);
+kv_list(Collection, StartKey, Limit) when is_binary(Collection) ->
+    kv_list(binary_to_list(Collection), StartKey, Limit);
+kv_list(Collection, StartKey, Limit) when is_binary(StartKey) ->
+    kv_list(Collection, binary_to_list(StartKey), Limit);
 kv_list(Collection, StartKey, Limit) when is_integer(Limit) ->
     UriFragment = [kv_list_uri_encode([Collection], "startKey", StartKey), "&limit=", Limit],
-    request(get, UriFragment, [], []).
+    request(get, UriFragment).
 
+kv_list(Collection, StartKey, Limit, true) when is_binary(Collection) ->
+    kv_list(binary_to_list(Collection), StartKey, Limit, true);
+kv_list(Collection, StartKey, Limit, true) when is_binary(StartKey) ->
+    kv_list(Collection, binary_to_list(StartKey), Limit, true);
 kv_list(Collection, StartKey, Limit, true) ->
     UriFragment = [kv_list_uri_encode([Collection], "afterKey", StartKey), "&limit=", Limit],
-    request(get, UriFragment, [], []);
+    request(get, UriFragment);
+kv_list(Collection, StartKey, Limit, _) when is_binary(Collection) ->
+    kv_list(binary_to_list(Collection), StartKey, Limit, false);
+kv_list(Collection, StartKey, Limit, _) when is_binary(StartKey) ->
+    kv_list(Collection, binary_to_list(StartKey), Limit, false);
 kv_list(Collection, StartKey, Limit, _) ->
     UriFragment = [kv_list_uri_encode([Collection], "startKey", StartKey), "&limit", Limit],
-    request(get, UriFragment, [], []).
+    request(get, UriFragment).
 
+kv_put(Collection, Key, Body) when is_binary(Collection) ->
+    kv_put(binary_to_list(Collection), Key, Body);
+kv_put(Collection, Key, Body) when is_binary(Key) ->
+    kv_put(Collection, binary_to_list(Key), Body);
 kv_put(Collection, Key, Body) ->
     UriFragment = uri_path_encode([Collection, Key]),
     request(put, UriFragment, [], Body).
 
+kv_put(Collection, Key, Body, Match) when is_binary(Collection) ->
+    kv_put(binary_to_list(Collection), Key, Body, Match);
+kv_put(Collection, Key, Body, Match) when is_binary(Key) ->
+    kv_put(Collection, binary_to_list(Key), Body, Match);
+kv_put(Collection, Key, Body, Match) when is_binary(Match) ->
+    kv_put(Collection, Key, Body, binary_to_list(Match));
 kv_put(Collection, Key, Body, Match) ->
     UriFragment = uri_path_encode([Collection, Key]),
     Headers = case Match of
@@ -101,59 +157,133 @@ kv_put(Collection, Key, Body, Match) ->
     end,
     request(put, UriFragment, Headers, Body).
 
+kv_delete(Collection, Key) when is_binary(Collection) ->
+    kv_delete(binary_to_list(Collection), Key);
+kv_delete(Collection, Key) when is_binary(Key) ->
+    kv_delete(Collection, binary_to_list(Key));
 kv_delete(Collection, Key) ->
     UriFragment = uri_path_encode([Collection, Key]),
-    request(delete, UriFragment, [], []).
+    request(delete, UriFragment).
 
+kv_delete(Collection, Key, IfMatch) when is_binary(Collection) ->
+    kv_delete(binary_to_list(Collection), Key, IfMatch);
+kv_delete(Collection, Key, IfMatch) when is_binary(Key) ->
+    kv_delete(Collection, binary_to_list(Key), IfMatch);
+kv_delete(Collection, Key, IfMatch) when is_binary(IfMatch) ->
+    kv_delete(Collection, Key, binary_to_list(IfMatch));
 kv_delete(Collection, Key, IfMatch) ->
     UriFragment = uri_path_encode([Collection, Key]),
     Headers = [
         {"if-match", IfMatch}
     ],
-    request(delete, UriFragment, Headers, []).
+    request(delete, UriFragment, Headers).
 
+kv_purge(Collection, Key) when is_binary(Collection) ->
+    kv_purge(binary_to_list(Collection), Key);
+kv_purge(Collection, Key) when is_binary(Key) ->
+    kv_purge(Collection, binary_to_list(Key));
 kv_purge(Collection, Key) ->
     UriFragment = [uri_path_encode([Collection, Key]), "?purge=true"],
-    request(delete, UriFragment, [], []).
+    request(delete, UriFragment).
 
+kv_purge(Collection, Key, IfMatch) when is_binary(Collection) ->
+    kv_purge(binary_to_list(Collection), Key, IfMatch);
+kv_purge(Collection, Key, IfMatch) when is_binary(Key) ->
+    kv_purge(Collection, binary_to_list(Key), IfMatch);
+kv_purge(Collection, Key, IfMatch) when is_binary(IfMatch) ->
+    kv_purge(Collection, Key, binary_to_list(IfMatch));
 kv_purge(Collection, Key, IfMatch) ->
     UriFragment = [uri_path_encode([Collection, Key]), "?purge=true"],
     Headers = [
         {"if-match", IfMatch}
     ],
-    request(delete, UriFragment, Headers, []).
+    request(delete, UriFragment, Headers).
 
+events_get(Collection, Key, EventType) when is_binary(Collection) ->
+    events_get(binary_to_list(Collection), Key, EventType);
+events_get(Collection, Key, EventType) when is_binary(Key) ->
+    events_get(Collection, binary_to_list(Key), EventType);
+events_get(Collection, Key, EventType) when is_binary(EventType) ->
+    events_get(Collection, Key, binary_to_list(EventType));
 events_get(Collection, Key, EventType) ->
     UriFragment = events_uri_encode([Collection, Key], EventType),
-    request(get, UriFragment, [], []).
+    request(get, UriFragment).
 
+events_get(Collection, Key, EventType, Start) when is_binary(Collection) ->
+    events_get(binary_to_list(Collection), Key, EventType, Start);
+events_get(Collection, Key, EventType, Start) when is_binary(Key) ->
+    events_get(Collection, binary_to_list(Key), EventType, Start);
+events_get(Collection, Key, EventType, Start) when is_binary(EventType) ->
+    events_get(Collection, Key, binary_to_list(EventType), Start);
 events_get(Collection, Key, EventType, Start) ->
     UriFragment = [events_uri_encode([Collection, Key], EventType), "?start=", Start],
-    request(get, UriFragment, [], []).
+    request(get, UriFragment).
 
+events_get(Collection, Key, EventType, Start, End) when is_binary(Collection) ->
+    events_get(binary_to_list(Collection), Key, EventType, Start, End);
+events_get(Collection, Key, EventType, Start, End) when is_binary(Key) ->
+    events_get(Collection, binary_to_list(Key), EventType, Start, End);
+events_get(Collection, Key, EventType, Start, End) when is_binary(EventType) ->
+    events_get(Collection, Key, binary_to_list(EventType), Start, End);
 events_get(Collection, Key, EventType, Start, End) ->
     UriFragment = [events_uri_encode([Collection, Key], EventType), "?start=", Start, "&end=", End],
-    request(get, UriFragment, [], []).
+    request(get, UriFragment).
 
+events_put(Collection, Key, EventType) when is_binary(Collection) ->
+    events_put(binary_to_list(Collection), Key, EventType);
+events_put(Collection, Key, EventType) when is_binary(Key) ->
+    events_put(Collection, binary_to_list(Key), EventType);
+events_put(Collection, Key, EventType) when is_binary(EventType) ->
+    events_put(Collection, Key, binary_to_list(EventType));
 events_put(Collection, Key, EventType) ->
     UriFragment = events_uri_encode([Collection, Key], EventType),
-    request(put, UriFragment, [], []).
+    request(put, UriFragment).
 
+events_put(Collection, Key, EventType, Timestamp) when is_binary(Collection) ->
+    events_put(binary_to_list(Collection), Key, EventType, Timestamp);
+events_put(Collection, Key, EventType, Timestamp) when is_binary(Key) ->
+    events_put(Collection, binary_to_list(Key), EventType, Timestamp);
+events_put(Collection, Key, EventType, Timestamp) when is_binary(EventType) ->
+    events_put(Collection, Key, binary_to_list(EventType), Timestamp);
 events_put(Collection, Key, EventType, Timestamp) ->
     UriFragment = [events_uri_encode([Collection, Key], EventType), "?timestamp=", Timestamp],
-    request(put, UriFragment, [], []).
+    request(put, UriFragment).
 
+relation_get(Collection, Key, Kinds) when is_binary(Collection) ->
+    relation_get(binary_to_list(Collection), Key, Kinds);
+relation_get(Collection, Key, Kinds) when is_binary(Key) ->
+    relation_get(Collection, binary_to_list(Key), Kinds);
 relation_get(Collection, Key, Kinds) ->
     UriFragment = uri_path_encode([Collection, Key, "relations", Kinds]),
-    request(get, UriFragment, [], []).
+    request(get, UriFragment).
 
+relation_put(Collection, Key, Kind, ToCollection, ToKey) when is_binary(Collection) ->
+    relation_put(binary_to_list(Collection), Key, Kind, ToCollection, ToKey);
+relation_put(Collection, Key, Kind, ToCollection, ToKey) when is_binary(Key) ->
+    relation_put(Collection, binary_to_list(Key), Kind, ToCollection, ToKey);
+relation_put(Collection, Key, Kind, ToCollection, ToKey) when is_binary(Kind) ->
+    relation_put(Collection, Key, binary_to_list(Kind), ToCollection, ToKey);
+relation_put(Collection, Key, Kind, ToCollection, ToKey) when is_binary(ToCollection) ->
+    relation_put(Collection, Key, Kind, binary_to_list(ToCollection), ToKey);
+relation_put(Collection, Key, Kind, ToCollection, ToKey) when is_binary(ToKey) ->
+    relation_put(Collection, Key, Kind, ToCollection, binary_to_list(ToKey));
 relation_put(Collection, Key, Kind, ToCollection, ToKey) ->
     UriFragment = uri_path_encode([Collection, Key, "relation", Kind, ToCollection, ToKey]),
-    request(put, UriFragment, [], []).
+    request(put, UriFragment).
 
+relation_purge(Collection, Key, Kind, ToCollection, ToKey) when is_binary(Collection) ->
+    relation_purge(binary_to_list(Collection), Key, Kind, ToCollection, ToKey);
+relation_purge(Collection, Key, Kind, ToCollection, ToKey) when is_binary(Key) ->
+    relation_purge(Collection, binary_to_list(Key), Kind, ToCollection, ToKey);
+relation_purge(Collection, Key, Kind, ToCollection, ToKey) when is_binary(Kind) ->
+    relation_purge(Collection, Key, binary_to_list(Kind), ToCollection, ToKey);
+relation_purge(Collection, Key, Kind, ToCollection, ToKey) when is_binary(ToCollection) ->
+    relation_purge(Collection, Key, Kind, binary_to_list(ToCollection), ToKey);
+relation_purge(Collection, Key, Kind, ToCollection, ToKey) when is_binary(ToKey) ->
+    relation_purge(Collection, Key, Kind, ToCollection, binary_to_list(ToKey));
 relation_purge(Collection, Key, Kind, ToCollection, ToKey) ->
     UriFragment = [uri_path_encode([Collection, Key, "relation", Kind, ToCollection, ToKey]), "?purge=true"],
-    request(delete, UriFragment, [], []).
+    request(delete, UriFragment).
 
 %% Internal API
 
@@ -169,10 +299,15 @@ search_uri_encode(PathFragments, LuceneQuery) ->
 uri_path_encode(PathFragments) ->
     [ ["/", http_uri:encode(Path)] || Path <- PathFragments ].
 
+request(Method, UriFragment) ->
+    request(Method, UriFragment, [], []).
+
+request(Method, UriFragment, Headers) ->
+    request(Method, UriFragment, Headers, []).
+
 request(Method, UriFragment, Headers, Body) ->
     Url = lists:flatten(["https://api.orchestrate.io:443/v0", UriFragment]),
     {ok, Auth} = application:get_env(orchestrate_client, http_auth),
-    % TODO expose some of the HttpOptions
     Headers2 = Headers ++ [
         {"accept", "application/json"},
         {"authorization", Auth},
@@ -185,13 +320,14 @@ request(Method, UriFragment, Headers, Body) ->
         _ ->
             Request = {Url, Headers2}
     end,
+    %% TODO expose some of the HttpOptions
     HttpOptions = [
         {ssl, [{verify, verify_none}]},
         {timeout, 3000},
         {connect_timeout, 1000}
     ],
     Options = [],
-    % TODO don't set these options on every request
+    %% TODO don't set these options on every request
     httpc:set_options([
         {pipeline_timeout, 60000}
     ]),
@@ -200,7 +336,7 @@ request(Method, UriFragment, Headers, Body) ->
         {ok, {{_, Status, _}, Headers3, _Body2}} when Status == 201; Status == 204 ->
             {Status, Headers3, no_body};
         {ok, {{_, Status, _}, Headers3, Body2}} ->
-            % also decode Orchestrate error JSON responses
+            %% also decode Orchestrate error JSON responses
             {Status, Headers3, jiffy:decode(Body2)};
         {error, _} ->
             Response
