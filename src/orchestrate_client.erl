@@ -311,7 +311,7 @@ request(Method, UriFragment, Headers, Body) ->
     Headers2 = Headers ++ [
         {"accept", "application/json"},
         {"authorization", Auth},
-        {"user-agent", "Orchestrate Java Client/0.2.0"}
+        {"user-agent", "Orchestrate Erlang Client/master"}
     ],
     case Method of
         put ->
