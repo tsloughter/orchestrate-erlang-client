@@ -24,7 +24,7 @@
                   stdlib,
                   ssl,
                   inets,
-                  jiffy
+                  jsxn
                  ]},
   {env, []}
  ]}.

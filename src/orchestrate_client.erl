@@ -359,7 +359,7 @@ request(Method, UriFragment, Headers, Body) ->
             {Status, Headers3, no_body};
         {ok, {{_, Status, _}, Headers3, Body2}} ->
             %% also decode Orchestrate error JSON responses
-            {Status, Headers3, jiffy:decode(Body2)};
+            {Status, Headers3, jsx:decode(Body2)};
         {error, _} ->
             Response
     end.
