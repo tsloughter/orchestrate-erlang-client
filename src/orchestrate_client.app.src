@@ -23,7 +23,8 @@
                   kernel,
                   stdlib,
                   ssl,
-                  inets
+                  inets,
+                  jiffy
                  ]},
   {env, []}
  ]}.
