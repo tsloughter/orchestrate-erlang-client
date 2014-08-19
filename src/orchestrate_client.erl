@@ -72,16 +72,19 @@ search(Collection, LuceneQuery, Offset) when is_binary(Collection) ->
     search(binary_to_list(Collection), LuceneQuery, Offset);
 search(Collection, LuceneQuery, Offset) when is_binary(LuceneQuery) ->
     search(Collection, binary_to_list(LuceneQuery), Offset);
-search(Collection, LuceneQuery, Offset) ->
-    UriFragment = [search_uri_encode([Collection], LuceneQuery), "&offset=", Offset],
+search(Collection, LuceneQuery, Offset) when is_integer(Offset) ->
+    UriFragment = [search_uri_encode([Collection], LuceneQuery),
+                  "&offset=", integer_to_list(Offset)],
     request(get, UriFragment).
 
 search(Collection, LuceneQuery, Offset, Limit) when is_binary(Collection) ->
     search(binary_to_list(Collection), LuceneQuery, Offset, Limit);
 search(Collection, LuceneQuery, Offset, Limit) when is_binary(LuceneQuery) ->
     search(Collection, binary_to_list(LuceneQuery), Offset, Limit);
-search(Collection, LuceneQuery, Offset, Limit) ->
-    UriFragment = [search_uri_encode([Collection], LuceneQuery), "&offset=", Offset, "&limit=", Limit],
+search(Collection, LuceneQuery, Offset, Limit) when is_integer(Offset)
+                                                  , is_integer(Limit) ->
+    UriFragment = [search_uri_encode([Collection], LuceneQuery),
+                  "&offset=", integer_to_list(Offset), "&limit=", integer_to_list(Limit)],
     request(get, UriFragment).
 
 kv_get(Collection, Key) when is_binary(Collection) ->
@@ -111,7 +114,7 @@ kv_list(Collection) ->
 kv_list(Collection, Limit) when is_binary(Collection) ->
     kv_list(binary_to_list(Collection), Limit);
 kv_list(Collection, Limit) when is_integer(Limit) ->
-    UriFragment = [uri_path_encode([Collection]), "?limit=", Limit],
+    UriFragment = [uri_path_encode([Collection]), "?limit=", integer_to_list(Limit)],
     request(get, UriFragment);
 kv_list(Collection, StartKey) when is_binary(StartKey) ->
     kv_list(Collection, binary_to_list(StartKey));
@@ -131,7 +134,8 @@ kv_list(Collection, StartKey, Limit) when is_binary(Collection) ->
 kv_list(Collection, StartKey, Limit) when is_binary(StartKey) ->
     kv_list(Collection, binary_to_list(StartKey), Limit);
 kv_list(Collection, StartKey, Limit) when is_integer(Limit) ->
-    UriFragment = [kv_list_uri_encode([Collection], "startKey", StartKey), "&limit=", Limit],
+    UriFragment = [kv_list_uri_encode([Collection], "startKey", StartKey),
+                  "&limit=", integer_to_list(Limit)],
     request(get, UriFragment).
 
 kv_list(Collection, StartKey, Limit, true) when is_binary(Collection) ->
@@ -139,14 +143,16 @@ kv_list(Collection, StartKey, Limit, true) when is_binary(Collection) ->
 kv_list(Collection, StartKey, Limit, true) when is_binary(StartKey) ->
     kv_list(Collection, binary_to_list(StartKey), Limit, true);
 kv_list(Collection, StartKey, Limit, true) ->
-    UriFragment = [kv_list_uri_encode([Collection], "afterKey", StartKey), "&limit=", Limit],
+    UriFragment = [kv_list_uri_encode([Collection], "afterKey", StartKey),
+                  "&limit=", integer_to_list(Limit)],
     request(get, UriFragment);
 kv_list(Collection, StartKey, Limit, _) when is_binary(Collection) ->
     kv_list(binary_to_list(Collection), StartKey, Limit, false);
 kv_list(Collection, StartKey, Limit, _) when is_binary(StartKey) ->
     kv_list(Collection, binary_to_list(StartKey), Limit, false);
 kv_list(Collection, StartKey, Limit, _) ->
-    UriFragment = [kv_list_uri_encode([Collection], "startKey", StartKey), "&limit", Limit],
+    UriFragment = [kv_list_uri_encode([Collection], "startKey", StartKey),
+                  "&limit", integer_to_list(Limit)],
     request(get, UriFragment).
 
 kv_put(Collection, Key, Body) when is_binary(Collection) ->
