@@ -348,7 +348,7 @@ request(Method, UriFragment, Headers, Body) ->
         {timeout, 3000},
         {connect_timeout, 1000}
     ],
-    Options = [],
+    Options = [{body_format, binary}],
     %% TODO don't set these options on every request
     httpc:set_options([
         {pipeline_timeout, 60000}
